@@ -1,9 +1,12 @@
 import discord
 from discord.ext import commands
 import os
-from grok import GrokAPI
+from dotenv import load_dotenv
 
-intents = discord.Intents.all()
+load_dotenv()
+
+intents = discord.Intents.default()
+intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.event
@@ -14,10 +17,10 @@ async def on_ready():
 async def on_message(message):
     if message.author == bot.user:
         return
+    
     if bot.user.mentioned_in(message):
-        async with message.channel.typing():
-            response = GrokAPI(os.getenv("GROK_API_KEY")).chat(message.content)
-            await message.reply(response)
+        await message.channel.typing()
+        await message.reply("Vesperath is here. What do you need, my friend?")
     
     await bot.process_commands(message)
 
